@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 
 #include <pcap/pcap.h>
 #include <pcre.h>
@@ -143,7 +144,15 @@ uint8_t flag_sni_available;
 int sni_handler (uint8_t *host_name, uint16_t host_name_length) {
 	uint16_t i;
 
-	fprintf(stdout, "%u.%u.%u.%u:%u -> %u.%u.%u.%u:[%u] ",
+	time_t rawtime;
+	struct tm * timeinfo;
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	char buffer [80];
+	strftime (buffer, 80, "%F %T: ",timeinfo);
+
+	fprintf(stdout, "%s%u.%u.%u.%u:%u -> %u.%u.%u.%u:[%u] ",
+		buffer,
 		*(((uint8_t *)&(ip->saddr)) + 0),
 		*(((uint8_t *)&(ip->saddr)) + 1),
 		*(((uint8_t *)&(ip->saddr)) + 2),
